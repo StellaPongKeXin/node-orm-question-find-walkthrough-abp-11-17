@@ -1,5 +1,5 @@
 const db = require("../config/db")
-
+ 
 class Question{
   static CreateTable() {
     return new Promise(function(resolve){
@@ -7,17 +7,17 @@ class Question{
         id INTEGER PRIMARY KEY,
         content TEXT
       )`
-      
+ 
       db.run(sql, function(){
         resolve("questions table created")
       })      
     })
   }
-
+ 
   constructor(content){
     this.content = content
   }
-
+ 
   insert(){
     const self = this 
     const sql = `INSERT INTO questions (content) VALUES (?)`
@@ -28,7 +28,17 @@ class Question{
       })
     })
   }
-
+ 
+  static Find(id){
+    const sql = "SELECT * FROM questions WHERE id = ?"
+    return new Promise(function(resolve){
+      db.get(sql, [id], function(err, result){
+        const question = new Question(result.content)
+        question.id = result.id
+        resolve(question)
+      })
+    })
+  }
 }
-
+ 
 module.exports = Question;
